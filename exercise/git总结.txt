@@ -1,0 +1,47 @@
+1.git 配置好邮箱地址，ssh密钥后；
+2.一定要区分本地工作区域和仓库的区别：工作区域就是你写东西的地方；而仓库就是你add/rm你的内容和commit的区域
+3.时常git status查看文件状态，时常git log查看历史记录
+4.一般情况删除已经提交的本地文件，可以checkout从版本库仓库恢复，如果版本库仓库也删除，那就无法恢复。
+5.关于远程仓库，远程仓库和本地仓库的传输通过SSH加密。并且创建ssh key;将当前电脑上的公钥添加到GitHub仓库上，即可本地工作；一个GitHub远程仓库可以添加多个工作电脑的公钥。（可以自己搭建远程仓库Git服务器，从而私有远程仓库）
+6.通过GIT远程仓库可以将项目远程clone到本地，支持多种协议。https，ssh
+7.clone下来的项目，自己开发的时候创建属于仅自己可见的分支branch。快速、安全又隐秘。
+8.创建分支dev，新建dev指针，并指向matser分支。再将Head指向dev，dev即当前分支
+git checkout -b dev(创建并切；branch & checkout也可以；还有最新的命令git switch -c dev
+
+9.合并分支到主分支：先在dev上 add和commit修改的工作文件，然后在切换到主分支上去执行快速合并git	merge dev；最后删除dev分支，git branch -d dev
+
+10.查看分支：git branch 
+
+11.关于冲突，是分支和主分支都有修改同一个文件，并add和commit。无法快速合并得修改再add和commit；git log --graph可以看到分支合并图
+
+12.合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并。git merge --no-ff -m "merge with no-ff" dev
+13.bug分支，每一次遇到bug的时候创建一个新的bug分支来干活，修改完成，切到主分支普通合并。第一步：隐藏自己当前工作未提交的分支。git stash；第二步：确定哪个分支修复bug，当在master分支上修复，就从master上创建临时分支，git checkout master，git checkout -b issue-101；第三步：修改bug改完添加，提交。切到主分支普通合并，最后删除临时bug分支；第四步：恢复工作分支，切到工作分支，查看隐藏工作分支git stash list，选择对应的stash git stash apply stash@{0}或者直接git stash pop回到工作现场并删除stash；第五步：将master上修复的bug合并到工作分支,git cherry-pick <commit>重放。
+
+14.特性分支：每添加新功能，就新建一个feature分支；并开发，合并，删除该特性分支；
+如：git switch -c feature-vulcan；git add vulcan.py；git commit -m "add feature vulcan";切回dev准备合并git switch dev；git merge --no-ff -m "merge with no-ff" dev;git branch -d feature-vulcan(如果特性废弃，就在分支合并之前删除特性分支）
+
+15.多人协作：1.查看远程库的信息git remote -v，查看可推送可抓取的origin地址。
+2.推送分支，git push origin master;git push origin dev,master时刻与远程同步，dev开发分支，远程同步；bug分支没必要推送远程；feature分支是否推到远程看情况；
+3.fetch抓取分支，当推送文件后，发现文件冲突。先git pull将最新提交从origin/dev上抓取下来，然后本地合并，解决冲突，再推送。git branch --set-upstream-to=origin/dev dev当git pull失败，设置本地dev和远程origin/dev的链接，再git pull，再合并，冲突，解决冲突，add，commit，push 
+
+16.rebase:把分叉的提交历史“整理”成一条直线，看上去更直观。缺点是本地的分叉提交已经被修改过了。git log --graph --pretty=oneline --abbrev-commit.先将本地未push的分叉提交历史整理成直线。在提交
+
+17.标签管理：17.1创建标签，git log --pretty=oneline --abbrev-commit；git tag <tagname> <commitid>;git tag -a <tagname> -m "blablabla..."
+17.2查看标签，git tag,git show <tagname>,
+17.3操作标签:git tag -d v0.1标签本地安全删除，不推送；主动推送标签到远程git push origin <tagname>；git push origin --tags；
+已经推送到远程，要删除远程标签就麻烦，先删除本地标签，再删除远程git push origin :refs/tags/v1.0
+
+
+18.如何参与开源项目：找到一个项目；fork下生成clone仓库；在本地去通过自己的账号clone git clone git@github.com:michaelliao/bootstrap.git;这样才能修改推送到自己的clone仓库；在github上原项目发起pull request，通过之后才能修改推送到开源项目
+
+
+19.使用Gitee，码云，来搭建个人Gitee远程项目。git remote add origin git@gitee.com:liaoxuefeng/learngit.git 本地与Gitee远程库关联；然后就可以push 和 pull；如果remote add失败，git remote -v查看远程库信息；并删除已有的的GitHub远程库git remote rm origin;再关联Gitee远程库git remote add origin git@gitee.com:liaoxuefeng/learngit.git;在查看远程库信息git remote -v;
+既关联Gihub远程库又关联gitee远程库：git remote rm origin先删除已有的远程库；先关联github远程库git remote add github git@github.com:michaelliao/learngit.git；
+再关联gitee远程库 git remote add gitee git@gitee.com:liaoxuefeng/learngit.git；
+如果要推送到GitHub，使用命令：
+git push github master
+如果要推送到Gitee，使用命令：
+git push gitee master：
+
+
+
