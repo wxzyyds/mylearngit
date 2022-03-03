@@ -44,4 +44,16 @@ git push github master
 git push gitee master：
 
 
-
+20.自定义GIT：
+	20.1：忽略特殊文件：Git工作区的根目录下创建一个特殊的	touch	.gitignore文件，然后把要忽略的文件名填进去，Git就会自动忽略这些文件。
+	20.2:配置别名：git config --global alias.简写名称  cmdname
+	20.3:搭建Git服务器:准备一台linux服务器；第一步，安装git：$ sudo apt-get install git；第二步，创建一个git用户，用来运行git服务：$ sudo adduser git；第三步，创建证书登录：收集所有需要登录的用户的公钥，就是他们自己的id_rsa.pub文件，把所有公钥导入到/home/git/.ssh/authorized_keys文件里，一行一个。第四步，初始化Git仓库：先选定一个目录作为Git仓库，假定是/srv/sample.git，在/srv目录下输入命令：$ sudo git init --bare sample.git；sudo chown -R git:git sample.git；第五步，禁用shell登录：
+出于安全考虑，第二步创建的git用户不允许登录shell，这可以通过编辑/etc/passwd文件完成。找到类似下面的一行：
+git:x:1001:1001:,,,:/home/git:/bin/bash
+改为：
+git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+这样，git用户可以正常通过ssh使用git，但无法登录shell，因为我们为git用户指定的git-shell每次一登录就自动退出。第六步，克隆远程仓库：
+现在，可以通过git clone命令克隆远程仓库了，在各自的电脑上运行：
+$ git clone git@server:/srv/sample.gitCloning into 'sample'...warning: You appear to have cloned an empty repository.
+管理公钥/home/git/.ssh/authorized_keys用Gitosis、管理权限因为Git支持钩子（hook），所以，可以在服务器端编写一系列脚本来控制提交等操作，达到权限控制的目的，要像SVN那样变态地控制权限，用Gitolite
+21.使用SourceTree图形界面工具会更加节省时间，当然使用命令行更能加深对git的使用和理解
