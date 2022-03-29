@@ -6,7 +6,7 @@ package com.itranswarp.learnjava;
  * @author liaoxuefeng
  */
 public class Calculator {
-
+	
 	private long n = 0;
 
 	public long add(long x) {
@@ -18,4 +18,6 @@ public class Calculator {
 		n = n - x;
 		return n;
 	}
+	
+	
 }
